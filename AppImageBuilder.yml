@@ -26,6 +26,7 @@ AppDir:
       - ipython3
       - python3-pkg-resources
       - python3-pyqt4
+      - python3-distutils
     exclude: []
   files:
     exclude:
@@ -36,6 +37,8 @@ AppDir:
     - usr/share/doc/*/TODO.*
   runtime:
     env:
+      emqTools: '${APPDIR}/emqTools/'
+      TTAG: '${APPDIR}/emqTools/ttag/python/'
       PYTHONHOME: '${APPDIR}/usr'
       PYTHONPATH: '${APPDIR}/usr/lib/python3.6/site-packages'
   test:
