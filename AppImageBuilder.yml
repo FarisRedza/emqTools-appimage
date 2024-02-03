@@ -27,6 +27,8 @@ AppDir:
       - python3-pkg-resources
       - python3-pyqt4
       - python3-distutils
+      - libboost-all-dev
+      - libusb-dev
     exclude: []
   files:
     exclude:
