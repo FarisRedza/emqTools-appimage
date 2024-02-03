@@ -1,0 +1,5 @@
+emqTools/
+AppDir/
+appimage-build/
+*.AppImage
+*.zsync
