@@ -1,11 +1,19 @@
 # appimage-builder recipe see https://appimage-builder.readthedocs.io for details
 version: 1
 script:
-  - rm -rf AppDir  | true
-  - mkdir -p AppDir
-  - cp -r emqTools AppDir/emqTools
-  - cp -r lib/lib/ AppDir/
-  - chmod +x AppDir/emqTools/ttag/UQD/UQDinterface
+  - rm -rf AppDir | true
+  - mkdir -p AppDir/usr/lib/
+  - cp -r emqTools AppDir/
+
+  - cd AppDir/emqTools/ttag/libttag/
+  - make all
+  - cd -
+  - cp AppDir/emqTools/ttag/libttag/libttag.so AppDir/usr/lib/
+
+  - cd AppDir/emqTools/ttag/UQD/
+  - make all
+  - cd -
+
   - python3 -m pip install --system --ignore-installed --prefix=/usr --root=AppDir -r ./requirements.txt
 AppDir:
   path: ./AppDir
@@ -25,25 +33,29 @@ AppDir:
       - sourceline: 'deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ bionic-backports main restricted universe multiverse'
     include:
       - python3
-      - ipython3
       - python3-pyqt4
       - python3-distutils
-      - python3-pkg-resources
-      - libboost-all-dev
+      - libboost-thread1.65
+      - libboost-system1.65
+      - libboost-program-options1.65
     exclude: []
   files:
+    include:
+      - /usr/lib/libtimetag64.so
     exclude:
-    - usr/share/man
-    - usr/share/doc/*/README.*
-    - usr/share/doc/*/changelog.*
-    - usr/share/doc/*/NEWS.*
-    - usr/share/doc/*/TODO.*
+      - usr/share/man
+      - usr/share/doc/*/README.*
+      - usr/share/doc/*/changelog.*
+      - usr/share/doc/*/NEWS.*
+      - usr/share/doc/*/TODO.*
   runtime:
     env:
+      APPDIR_LIBRARY_PATH: '$APPDIR/usr/lib/x86_64-linux-gnu:$APPDIR/lib/x86_64-linux-gnu:$APPDIR/usr/lib:$APPDIR/usr/lib64'
       emqTools: '${APPDIR}/emqTools/'
       TTAG: '${APPDIR}/emqTools/ttag/python'
       PYTHONHOME: '${APPDIR}/usr'
       PYTHONPATH: '${APPDIR}/usr/lib/python3.6/site-packages'
+    path_mappings: []
   test:
     fedora-30:
       image: appimagecrafters/tests-env:fedora-30
